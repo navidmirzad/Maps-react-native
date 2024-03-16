@@ -7,12 +7,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDB6rVJ3CIVSVOe8jkFl-BitUqEVO3po2E",
-  authDomain: "react-native-maps-25e17.firebaseapp.com",
-  projectId: "react-native-maps-25e17",
-  storageBucket: "react-native-maps-25e17.appspot.com",
-  messagingSenderId: "708225740109",
-  appId: "1:708225740109:web:0c4575b0109e67f70a5b04",
+  apiKey: "AIzaSyBFyuiQiE0usHpviTie8GPQxV6Je_Mfo6I",
+  authDomain: "maps-2cc51.firebaseapp.com",
+  projectId: "maps-2cc51",
+  storageBucket: "maps-2cc51.appspot.com",
+  messagingSenderId: "84861572138",
+  appId: "1:84861572138:web:42ca00fc9fb7ef1f051f53",
 };
 
 // Initialize Firebase
