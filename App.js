@@ -1,5 +1,4 @@
-import { app } from "./firebase";
-import { Button, StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Button } from "react-native";
 import { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
@@ -30,24 +29,32 @@ export default function App() {
 
   const [imagePath, setImagePath] = useState(null);
 
-  useEffect(() => {
-    getImage();
-  }, []);
-
-  async function uploadImage(locationId) {
+  async function uploadImage() {
     if (!imagePath) {
       console.log("No image to upload");
       return;
     }
+
+    const res = await fetch(imagePath);
+    const blob = await res.blob();
+    const storageRef = ref(storage, `image.jpg`);
+    await uploadBytes(storageRef, blob).then((snapshot) => {
+      alert("Image uploaded");
+    });
+  }
+
+  useEffect(() => {
+    getImage();
+  }, []);
+
+  async function getImage() {
     try {
-      const res = await fetch(imagePath);
-      const blob = await res.blob();
-      const storageRef = ref(storage, `${locationId}_image.jpg`);
-      await uploadBytes(storageRef, blob);
-      setImagePath("");
-      console.log("Image uploaded successfully");
+      getDownloadURL(ref(storage, `image.jpg`)).then((url) => {
+        setImagePath(url);
+        console.log("getImage successful");
+      });
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.log("Couldn't get image from firebase " + error);
     }
   }
 
@@ -57,18 +64,6 @@ export default function App() {
     });
     if (!imagePicked.canceled) {
       setImagePath(imagePicked.assets[0].uri);
-    }
-    uploadImage();
-  }
-
-  async function getImage() {
-    try {
-      getDownloadURL(ref(storage, `${locationId}_image.jpg`)).then((url) => {
-        setImagePath(url);
-        console.log("getImage successful");
-      });
-    } catch (error) {
-      console.log("Couldn't get image from firebase " + error);
     }
   }
 
@@ -85,18 +80,28 @@ export default function App() {
         ))}
         <Image style={styles.image} source={{ uri: imagePath }} />
       </MapView>
+      <Button title="Upload Image" onPress={uploadImage} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  map: {
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     width: "100%",
-    height: "100%",
+    height: "10%",
+  },
+  map: {
+    flex: 1,
+    width: "98%",
+    maxHeight: 600,
   },
   image: {
-    width: "150",
-    height: "150",
-    border: "2px solid black",
+    alignSelf: "center",
+    width: "35%",
+    height: "25%",
+    borderWidth: 2,
   },
 });
